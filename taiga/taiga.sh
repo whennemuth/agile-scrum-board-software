@@ -1,7 +1,7 @@
 if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
    if [ ! -d $(pwd)/taiga-back/pgdata ] ; then
       mkdir -p $(pwd)/taiga-back/pgdata
-   fi
+   fi 
    docker run \
       --name taiga-postgres \
       -d \
