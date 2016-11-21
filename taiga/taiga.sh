@@ -1,5 +1,14 @@
 if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
-   docker run --name taiga-postgres -d -e POSTGRES_PASSWORD=password postgres
+   if [ ! -d $(pwd)/taiga-back/pgdata ] ; then
+      mkdir -p $(pwd)/taiga-back/pgdata
+   fi
+   docker run \
+      --name taiga-postgres \
+      -d \
+      -e POSTGRES_PASSWORD=password \
+      -e PGDATA=/var/lib/postgresql/data/pgdata \
+      -v $(pwd)/taiga-back/pgdata:/var/lib/postgresql/data/pgdata \
+      postgres
 elif [ -z "$(docker ps --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
    docker start taiga-postgres
 fi
@@ -29,6 +38,9 @@ elif [ -z "$(docker ps --filter name=taiga-events | grep taiga-events)" ] ; then
 fi
 
 if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
+   if [ ! -d $(pwd)/taiga-back/media ] ; then
+      mkdir -p $(pwd)/taiga-back/media
+   fi
    docker run -d \
      --name taiga \
      --link taiga-postgres:postgres \
@@ -36,8 +48,8 @@ if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
      --link taiga-rabbit:rabbit \
      --link taiga-events:events \
      -p 8282:80 \
-     -e TAIGA_HOSTNAME=localhost:8282 \
-     -v /media:/tmp/taiga-back/media \
+     -e TAIGA_HOSTNAME=kuali-research-qa.bu.edu/taiga \
+     -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
      benhutchins/taiga
 elif [ -z "$(docker ps | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
    docker start taiga
