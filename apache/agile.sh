@@ -6,6 +6,7 @@ fi
 
 if [ ! -d $(pwd)/logs ] ; then
    echo "logs" >> .gitignore
+   echo ".gitignore" >> .gitignore
    mkdir -p $(pwd)/logs
 fi
 

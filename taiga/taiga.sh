@@ -1,7 +1,13 @@
+if [ ! -d $(pwd)/taiga-back/pgdata ] ; then
+   mkdir -p $(pwd)/taiga-back/pgdata
+fi 
+if [ ! -d $(pwd)/taiga-back/media ] ; then
+   mkdir -p $(pwd)/taiga-back/media
+fi
+echo "taiga-back" >> .gitignore
+echo ".gitignore" >> .gitignore
+
 if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
-   if [ ! -d $(pwd)/taiga-back/pgdata ] ; then
-      mkdir -p $(pwd)/taiga-back/pgdata
-   fi 
    docker run \
       --name taiga-postgres \
       -d \
@@ -38,9 +44,6 @@ elif [ -z "$(docker ps --filter name=taiga-events | grep taiga-events)" ] ; then
 fi
 
 if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
-   if [ ! -d $(pwd)/taiga-back/media ] ; then
-      mkdir -p $(pwd)/taiga-back/media
-   fi
    docker run -d \
      --name taiga \
      --link taiga-postgres:postgres \
