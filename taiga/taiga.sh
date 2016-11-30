@@ -1,3 +1,4 @@
+# 1) Create the directories for mounting to containers and keep them out of the git index
 if [ ! -d $(pwd)/taiga-back/pgdata ] ; then
    mkdir -p $(pwd)/taiga-back/pgdata
 fi 
@@ -6,6 +7,29 @@ if [ ! -d $(pwd)/taiga-back/media ] ; then
 fi
 echo "taiga-back" >> .gitignore
 echo ".gitignore" >> .gitignore
+
+# 2) Figure out what the internet ip of the docker host is
+if [ -n "${DOCKERHOST}" ] ; then
+   HOST_IP=$DOCKERHOST
+else
+   # b) On an AWS instance, this expression will get the ip of the eth0 network bridge
+   HOST_IP=$(echo $(\
+      ip -h -f inet -o address \
+         | grep -i eth0 \
+         | grep -i -P -o '([\d]+\.?){4}') \
+         | grep -i -P -o '^([\d]+\.?){4}')
+   if [ -z "$HOST_IP" ] ; then
+      # b) This expression returns the gateway ip, but this may not be the same as the network bridge ip
+      HOST_IP=$(\
+         route -n \
+            | grep -Po "(?<=^0\.0\.0\.0)\x20+[\d\.]+" \
+            | tr -d "[:blank:]")"
+      if [ -z "$HOST_IP" ] ; then
+         # c) Hardcoded value for the EC2 instance I am currently working with.
+         HOST_IP=10.57.237.86
+      fi
+   fi
+fi
 
 if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
    docker run \
@@ -51,7 +75,7 @@ if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
      --link taiga-rabbit:rabbit \
      --link taiga-events:events \
      -p 8282:80 \
-     -e TAIGA_HOSTNAME=kuali-research-qa.bu.edu/taiga \
+     -e TAIGA_HOSTNAME=${HOST_IP}/taiga \
      -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
      benhutchins/taiga
 elif [ -z "$(docker ps | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
