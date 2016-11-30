@@ -67,7 +67,7 @@ elif [ -z "$(docker ps --filter name=taiga-events | grep taiga-events)" ] ; then
    docker start taiga-events
 fi
 
-if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
+if [ -z "$(docker ps -a | grep -P 'taiga\\s+.*?docker-entrypoint')" ] ; then
    docker run -d \
      --name taiga \
      --link taiga-postgres:postgres \
@@ -78,6 +78,6 @@ if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
      -e TAIGA_HOSTNAME=${HOST_IP}/taiga \
      -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
      benhutchins/taiga
-elif [ -z "$(docker ps | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
+elif [ -z "$(docker ps | grep -P 'taiga\\s+.*?docker-entrypoint')" ] ; then
    docker start taiga
 fi
