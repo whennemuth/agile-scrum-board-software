@@ -23,7 +23,7 @@ else
       HOST_IP=$(\
          route -n \
             | grep -Po "(?<=^0\.0\.0\.0)\x20+[\d\.]+" \
-            | tr -d "[:blank:]")"
+            | tr -d "[:blank:]")
       if [ -z "$HOST_IP" ] ; then
          # c) Hardcoded value for the EC2 instance I am currently working with.
          HOST_IP=10.57.237.86
