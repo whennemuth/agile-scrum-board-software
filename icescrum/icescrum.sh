@@ -8,7 +8,7 @@ if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
    fi
    docker run \
       -d \
-      -p 3306:3306 \ 
+      -p 3306:3306 \
       --name icescrum-db \
       --restart unless-stopped \
       -e MYSQL_ROOT_PASSWORD=root-secret \
@@ -20,6 +20,7 @@ fi
 
 if [ -z "$(docker ps -a --filter name=icescrum-app | grep icescrum-app)" ] ; then
    docker run \
+      -d \
       --name icescrum-app \
       --link icescrum-db \
       --restart unless-stopped \
