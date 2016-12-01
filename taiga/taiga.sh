@@ -5,8 +5,10 @@ fi
 if [ ! -d $(pwd)/taiga-back/media ] ; then
    mkdir -p $(pwd)/taiga-back/media
 fi
-echo "taiga-back" >> .gitignore
-echo ".gitignore" >> .gitignore
+if [ ! -f $(pwd)/.gitignore ] ; then
+   echo "taiga-back" >> .gitignore
+   echo ".gitignore" >> .gitignore
+fi
 
 # 2) Figure out what the internet ip of the docker host is
 if [ -n "${DOCKERHOST}" ] ; then

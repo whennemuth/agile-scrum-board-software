@@ -8,9 +8,12 @@ fi
 docker build -t $IMAGE_NAME .
 
 if [ ! -d $(pwd)/logs ] ; then
-   echo "logs" >> .gitignore
-   echo ".gitignore" >> .gitignore
    mkdir -p $(pwd)/logs
+fi
+
+if [ ! -f $(pwd)/.gitignore ] ; then
+   echo "taiga-back" >> .gitignore
+   echo ".gitignore" >> .gitignore
 fi
 
 docker run \

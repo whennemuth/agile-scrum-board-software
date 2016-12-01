@@ -5,10 +5,14 @@ if [ -z "$(docker images -q ${IMAGE_NAME})" ] ; then
 fi
 
 if [ ! -d $(pwd)/logs ] ; then
-   echo "logs" >> .gitignore
-   echo ".gitignore" >> .gitignore
    mkdir -p $(pwd)/logs
 fi
+
+if [ ! -f $(pwd)/.gitignore ] ; then
+   echo "taiga-back" >> .gitignore
+   echo ".gitignore" >> .gitignore
+fi
+
 
 if [ -z "$(docker ps -a --filter name=${CONTAINER_NAME} | grep ${CONTAINER_NAME})" ] ; then
    docker run \
