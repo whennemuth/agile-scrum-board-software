@@ -51,6 +51,9 @@ fi
 #    which it seems AWS EC2 does not support. It may be possible to get the support by fronting the EC2
 #    instance with an ELB with some wrangling to configure the ELB correctly to support the ws protocol.
 if ( [ -n "${TAIGA_USE_EVENTS}" ] && [ -n "$(echo ${TAIGA_USE_EVENTS} | grep -i -P '^((yes)|(true)|(on))$')" ] ); then
+   USE_EVENTS="true"
+fi
+if [ -n "${USE_EVENTS}" ] ; then
    if [ -z "$(docker ps -a --filter name=taiga-redis | grep taiga-redis)" ] ; then
       docker run --name taiga-redis -d redis:3
    elif [ -z "$(docker ps --filter name=taiga-redis | grep taiga-redis)" ] ; then
@@ -77,16 +80,26 @@ if ( [ -n "${TAIGA_USE_EVENTS}" ] && [ -n "$(echo ${TAIGA_USE_EVENTS} | grep -i 
 fi
 
 if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
-   docker run -d \
-     --name taiga \
-     --link taiga-postgres:postgres \
-     --link taiga-redis:redis \
-     --link taiga-rabbit:rabbit \
-     --link taiga-events:events \
-     -p 8282:80 \
-     -e TAIGA_HOSTNAME=${HOST_IP}:8282 \
-     -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
-     benhutchins/taiga
+   if [ -n "${USE_EVENTS}" ] ; then
+      docker run -d \
+        --name taiga \
+        --link taiga-postgres:postgres \
+        --link taiga-redis:redis \
+        --link taiga-rabbit:rabbit \
+        --link taiga-events:events \
+        -p 8282:80 \
+        -e TAIGA_HOSTNAME=${HOST_IP}:8282 \
+        -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
+        benhutchins/taiga
+   else
+      docker run -d \
+        --name taiga \
+        --link taiga-postgres:postgres \
+        -p 8282:80 \
+        -e TAIGA_HOSTNAME=${HOST_IP}:8282 \
+        -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
+        benhutchins/taiga
+   fi
 elif [ -z "$(docker ps | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
    docker start taiga
 fi
