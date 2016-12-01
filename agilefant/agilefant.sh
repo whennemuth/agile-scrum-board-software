@@ -22,7 +22,7 @@ fi
 if [ -z "$(docker ps -a --filter name=agilefant-app | grep agilefant-app)" ] ; then
    docker run \
       -d \
-      -p 8181:8080 
+      -p 8181:8080 \
       --name agilefant-app \
       --link agilefant-db:db \
       kcyeu/agilefant
