@@ -33,6 +33,7 @@ else
    fi
 fi
 
+# 3) Start the database container
 if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
    docker run \
       --name taiga-postgres \
@@ -45,31 +46,37 @@ elif [ -z "$(docker ps --filter name=taiga-postgres | grep taiga-postgres)" ] ; 
    docker start taiga-postgres
 fi
 
-if [ -z "$(docker ps -a --filter name=taiga-redis | grep taiga-redis)" ] ; then
-   docker run --name taiga-redis -d redis:3
-elif [ -z "$(docker ps --filter name=taiga-redis | grep taiga-redis)" ] ; then
-   docker start taiga-redis
+# 4) Optional: Start the events container and supporting containers.
+#    NOTE: Use of taiga-events includes communication over the WebSocket protocol ("ws:// instead of http://"),
+#    which it seems AWS EC2 does not support. It may be possible to get the support by fronting the EC2
+#    instance with an ELB with some wrangling to configure the ELB correctly to support the ws protocol.
+if ( [ -n "${TAIGA_USE_EVENTS}" ] && [ -n "$(echo ${TAIGA_USE_EVENTS} | grep -i -P '^((yes)|(true)|(on))$')" ] ); then
+   if [ -z "$(docker ps -a --filter name=taiga-redis | grep taiga-redis)" ] ; then
+      docker run --name taiga-redis -d redis:3
+   elif [ -z "$(docker ps --filter name=taiga-redis | grep taiga-redis)" ] ; then
+      docker start taiga-redis
+   fi
+   
+   if [ -z "$(docker ps -a --filter name=taiga-rabbit | grep taiga-rabbit)" ] ; then
+      docker run --name taiga-rabbit -d --hostname taiga rabbitmq:3
+   elif [ -z "$(docker ps --filter name=taiga-rabbit | grep taiga-rabbit)" ] ; then
+      docker start taiga-rabbit
+   fi
+   
+   if [ -z "$(docker ps -a --filter name=taiga-celery | grep taiga-celery)" ] ; then
+      docker run --name taiga-celery -d --link taiga-rabbit:rabbit celery
+   elif [ -z "$(docker ps --filter name=taiga-celery | grep taiga-celery)" ] ; then
+      docker start taiga-celery
+   fi
+   
+   if [ -z "$(docker ps -a --filter name=taiga-events | grep taiga-events)" ] ; then
+      docker run --name taiga-events -d --link taiga-rabbit:rabbit benhutchins/taiga-events
+   elif [ -z "$(docker ps --filter name=taiga-events | grep taiga-events)" ] ; then
+      docker start taiga-events
+   fi
 fi
 
-if [ -z "$(docker ps -a --filter name=taiga-rabbit | grep taiga-rabbit)" ] ; then
-   docker run --name taiga-rabbit -d --hostname taiga rabbitmq:3
-elif [ -z "$(docker ps --filter name=taiga-rabbit | grep taiga-rabbit)" ] ; then
-   docker start taiga-rabbit
-fi
-
-if [ -z "$(docker ps -a --filter name=taiga-celery | grep taiga-celery)" ] ; then
-   docker run --name taiga-celery -d --link taiga-rabbit:rabbit celery
-elif [ -z "$(docker ps --filter name=taiga-celery | grep taiga-celery)" ] ; then
-   docker start taiga-celery
-fi
-
-if [ -z "$(docker ps -a --filter name=taiga-events | grep taiga-events)" ] ; then
-   docker run --name taiga-events -d --link taiga-rabbit:rabbit benhutchins/taiga-events
-elif [ -z "$(docker ps --filter name=taiga-events | grep taiga-events)" ] ; then
-   docker start taiga-events
-fi
-
-if [ -z "$(docker ps -a | grep -P 'taiga\\s+.*?docker-entrypoint')" ] ; then
+if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
    docker run -d \
      --name taiga \
      --link taiga-postgres:postgres \
@@ -80,6 +87,6 @@ if [ -z "$(docker ps -a | grep -P 'taiga\\s+.*?docker-entrypoint')" ] ; then
      -e TAIGA_HOSTNAME=${HOST_IP}:8282 \
      -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
      benhutchins/taiga
-elif [ -z "$(docker ps | grep -P 'taiga\\s+.*?docker-entrypoint')" ] ; then
+elif [ -z "$(docker ps | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
    docker start taiga
 fi
