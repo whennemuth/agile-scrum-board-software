@@ -1,3 +1,8 @@
+# https://www.agilefant.com/support/user-guide/
+# The default login is:
+# User: admin
+# Pwd : secret
+
 if [ -z "$(docker ps -a --filter name=agilefant-db | grep agilefant-db)" ] ; then
    if [ ! -d $(pwd)/mysqldata ] ; then
       mkdir -p $(pwd)/mysqldata

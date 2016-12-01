@@ -39,7 +39,7 @@ RUN mv /etc/localtime /etc/localtime.orig && \
     ln -s /usr/share/zoneinfo/America/New_York /etc/localtime
 
 # Copy configurations for reverse proxy rewrite rules
-COPY agile.conf /etc/httpd/conf.d/
+# COPY agile.conf /etc/httpd/conf.d/
 
 # Copy the httpd startup script to the top directory
 COPY start-apache.sh /start-apache.sh

@@ -23,6 +23,7 @@ docker run \
    --restart unless-stopped \
    --name ${CONTAINER_NAME} \
    -v $(pwd)/logs:/var/log/httpd \
+   -v $(pwd)/html:/var/www/html/server \
    ${IMAGE_NAME}
 
 

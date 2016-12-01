@@ -9,7 +9,7 @@ if [ ! -d $(pwd)/logs ] ; then
 fi
 
 if [ ! -f $(pwd)/.gitignore ] ; then
-   echo "taiga-back" >> .gitignore
+   echo "logs" >> .gitignore
    echo ".gitignore" >> .gitignore
 fi
 
