@@ -2,6 +2,10 @@ if [ -z "$(docker ps -a --filter name=agilefant-db | grep agilefant-db)" ] ; the
    if [ ! -d $(pwd)/mysqldata ] ; then
       mkdir -p $(pwd)/mysqldata
    fi
+   if [ ! -f $(pwd)/.gitignore ] ; then
+      echo "mysqldata" >> .gitignore
+      echo ".gitignore" >> .gitignore
+   fi
    docker run \
       -d \
       --name agilefant-db \

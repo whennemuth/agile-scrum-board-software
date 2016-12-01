@@ -38,6 +38,7 @@ if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ;
    docker run \
       --name taiga-postgres \
       -d \
+      --restart unless-stopped \
       -e POSTGRES_PASSWORD=password \
       -e PGDATA=/var/lib/postgresql/data/pgdata \
       -v $(pwd)/taiga-back/pgdata:/var/lib/postgresql/data/pgdata \
@@ -87,6 +88,7 @@ if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
         --link taiga-redis:redis \
         --link taiga-rabbit:rabbit \
         --link taiga-events:events \
+        --restart unless-stopped \
         -p 8282:80 \
         -e TAIGA_HOSTNAME=${HOST_IP}:8282 \
         -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
@@ -95,6 +97,7 @@ if [ -z "$(docker ps -a | grep -P 'taiga\s+.*?docker-entrypoint')" ] ; then
       docker run -d \
         --name taiga \
         --link taiga-postgres:postgres \
+        --restart unless-stopped \
         -p 8282:80 \
         -e TAIGA_HOSTNAME=${HOST_IP}:8282 \
         -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
