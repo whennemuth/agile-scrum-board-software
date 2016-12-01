@@ -1,13 +1,11 @@
 # 1) Create the directories for mounting to containers and keep them out of the git index
+echo ".gitignore" > .gitignore
+echo "taiga-back" >> .gitignore
 if [ ! -d $(pwd)/taiga-back/pgdata ] ; then
    mkdir -p $(pwd)/taiga-back/pgdata
 fi 
 if [ ! -d $(pwd)/taiga-back/media ] ; then
    mkdir -p $(pwd)/taiga-back/media
-fi
-if [ ! -f $(pwd)/.gitignore ] ; then
-   echo "taiga-back" >> .gitignore
-   echo ".gitignore" >> .gitignore
 fi
 
 # 2) Figure out what the internet ip of the docker host is

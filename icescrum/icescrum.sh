@@ -7,6 +7,10 @@
 #                       If you set the port 443 (if ICESCRUM_HTTPS is set) or the port 80 then the port will be omitted in the URL.
 #    ICESCRUM_CONTEXT : It's the name that comes after "/" in the URL. You can either define another one or provide / to have an empty context.
 
+echo ".gitignore" > .gitignore
+echo "mysqldata" >> .gitignore
+echo "logs" >> .gitignore
+
 # 1) Start the database container
 if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
    if [ ! -d $(pwd)/mysqldata ] ; then
@@ -15,11 +19,7 @@ if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
    if [ ! -d $(pwd)/logs ] ; then
       mkdir -p $(pwd)/logs
    fi
-   if [ ! -f $(pwd)/.gitignore ] ; then
-      echo "mysqldata" >> .gitignore
-      echo "logs" >> .gitignore
-      echo ".gitignore" >> .gitignore
-   fi
+
    docker run \
       -d \
       -p 3306:3306 \
@@ -28,6 +28,7 @@ if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
       -e MYSQL_ROOT_PASSWORD=root-secret \
       -v $(pwd)/mysqldata:/var/lib/mysql \
       icescrum/mysql
+
 elif [ -z "$(docker ps --filter name=icescrum-db | grep icescrum-db)" ] ; then
    docker start icescrum-db
 fi

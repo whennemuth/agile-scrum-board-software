@@ -3,14 +3,17 @@
 # User: admin
 # Pwd : secret
 
+if [ ! -d $(pwd)/mysqldata ] ; then
+   mkdir -p $(pwd)/mysqldata
+fi
+if [ ! -d $(pwd)/logs ] ; then
+   mkdir -p $(pwd)/logs
+fi
+echo ".gitignore" > .gitignore
+echo "mysqldata" >> .gitignore
+echo "logs" >> .gitignore
+
 if [ -z "$(docker ps -a --filter name=agilefant-db | grep agilefant-db)" ] ; then
-   if [ ! -d $(pwd)/mysqldata ] ; then
-      mkdir -p $(pwd)/mysqldata
-   fi
-   if [ ! -f $(pwd)/.gitignore ] ; then
-      echo "mysqldata" >> .gitignore
-      echo ".gitignore" >> .gitignore
-   fi
    docker run \
       -d \
       --name agilefant-db \
@@ -30,6 +33,7 @@ if [ -z "$(docker ps -a --filter name=agilefant-app | grep agilefant-app)" ] ; t
       -p 8181:8080 \
       --name agilefant-app \
       --link agilefant-db:db \
+      -v $(pwd)/logs:/usr/local/tomcat/logs \
       kcyeu/agilefant
 elif [ -z "$(docker ps --filter name=agilefant-app | grep agilefant-app)" ] ; then
    docker start agilefant-app
