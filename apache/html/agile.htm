@@ -1,0 +1,123 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Hello World</title>
+<style>
+	div.box { 
+		float:left; 
+		border:solid 1px #8c7373;
+		background-color: #CCCCCC; 
+		margin: 10px;
+		height:420px; 
+		width:275px;
+		padding: 8px;
+		font: normal normal 12px arial;
+		text-align: justify;
+	}
+	div.header {
+		background-color: #003399; 
+		float:middle; 
+		color:white;
+		clear:both; 
+		width:100%;
+		text-align:center;
+		font: normal bold 16px arial;
+		padding:10px;
+	}
+	div.subheader {
+		float:left; 
+		clear:both; 
+		width:550px;
+		font: normal bold 12px arial;
+		margin-left:50px;
+		margin-top:20px;
+		margin-bottom:20px;
+		border:solid 1px #003399;
+		padding:10px;
+		color: #003399;
+		text-align: justify;
+	}
+</style>
+</head>
+<body leftmargin=0 topmargin=0 rightmargin=0>
+	<div class=header>
+		BU-IST scrum board open-source software playground & evaluation
+	</div>
+	<div class=subheader>
+		<img src=bu-logo.gif align=left style="margin-right:10px;">
+		It's been on our agenda in bu-ist to move into a more agile oriented approach with regards to project work.
+		To facilitate this 4 potiential open-source (free) scrum board applications have been installed within our AWS server network.
+		Each supports the scrum style (vs. kanban) and appeared to be the most popular among the available choices.
+		Keep in mind that these have not been thoroughly explored and may contain bugs <i>(If you find any, let me know at wrh@bu.edu)</i>.
+	</div>
+
+	<div class=box style="margin-left:50px;clear:both">
+		<img src=taiga1.PNG><br><br>
+		<a target="_blank" href="http://10.57.237.86:8282">Our Demo</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+		<a target="_blank" href="https://taiga.io/">Documentation</a>	
+		<p>Taiga is in beta, but seems to be the flashiest of the lot with an architecture that draws on the more modern javascript rich ui techniques.
+		</p>
+		<p>Along with that is included the optional use of the WebSockets protocol for receiving notifications and updates without the user having to initiate a browser request.
+		However, the WebSockets protocol does not appear to be supported directly be EC2 instances unless they are 
+		fronted with an ELB that has been wrangled with to handle these types of requests correctly <i>(Mohammed, any clarification on that?)</i> 
+		</p>
+		<p>Kanban is also supported.
+		</p>
+		<p>To get started, follow the "Sign up" link.
+		</p>
+	</div>
+	
+	<div class=box>
+		<img src=agilefant1.PNG><br><br>
+		<a target="_blank" href="http://10.57.237.86:8181/agilefant">Our Demo</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+		<a target="_blank" href="https://www.agilefant.com/support/user-guide/">Documentation</a>
+		<p>
+			Agilefant has been around the longest, is scrum based, and is a standard java/mysql application.
+		</p>
+		<p>
+			This would be the easiest of the choices to customize ourselves if we opted for it and wanted to change a few things. 
+			At the very least, the database is easy to understand and manipulate directly.
+		</p>
+		<p>
+			Our demo is based on the open-source version, however the paid version ($5 per person per month) is a more modern offering that brings 
+			it on par with other rich UI apps. The differences are listed in the <a target="_blank" href=https://www.agilefant.com/support/faq/>FAQ</a> section of their website.
+		</p>
+		<p>
+			If you are the first to try this out, the admin user is:
+			<ul><li>username: <b>admin</b></li><li>password: <b>secret</b></li></ul>
+		</p>
+	</div>
+	
+	<div class=box>
+		<img src=icescrum1.PNG><br><br>
+		<a target="_blank" href="http://10.57.237.86:8080/icescrum">Our Demo</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+		<a target="_blank" href="https://www.icescrum.com/documentation/section/getting-started/">Documentation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+		<a target="_blank" href="https://www.youtube.com/watch?v=TxBlOuPqCic">Video</a>
+		<p>
+			Icescrum is also a java/mysql application.
+		</p>
+		<p>
+			As with Agilefant, Icescrum offers a "community" version (our demo) and a "Pro" version.
+			The differences are listed on their <a target="_blank" href=https://www.icescrum.com/features/>features</a> page.
+		</p>
+		<p>
+			It appears also to have tool integration, among which are JIRA and Jenkins
+		</p>
+	</div>
+	
+	<div class=box>
+		<img src=kunagi1.PNG><br><br>
+		<a target="_blank" href="http://10.57.237.86:8383/kunagi">Our Demo</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+		<a target="_blank" href="http://kunagi.org/">Documentation</a>
+		<p>
+			Kunagi is also a java/mysql application with a tomcat web server. It does not have a database, but uses file based storage.
+		</p>
+		<p>
+			Kunagi claims the flexibility of a desktop application through use of the Google Web Toolkit (GWT)
+		</p>
+		<p>
+			Kunagi is fully open-source with no premium version.
+		</p>
+	</div>
+</body>
+</html>

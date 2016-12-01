@@ -12,8 +12,12 @@ if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
    if [ ! -d $(pwd)/mysqldata ] ; then
       mkdir -p $(pwd)/mysqldata
    fi
+   if [ ! -d $(pwd)/logs ] ; then
+      mkdir -p $(pwd)/logs
+   fi
    if [ ! -f $(pwd)/.gitignore ] ; then
       echo "mysqldata" >> .gitignore
+      echo "logs" >> .gitignore
       echo ".gitignore" >> .gitignore
    fi
    docker run \
@@ -29,8 +33,8 @@ elif [ -z "$(docker ps --filter name=icescrum-db | grep icescrum-db)" ] ; then
 fi
 
 # 2) Figure out what the internet ip of the docker host is
-if [ -n "${TAIGA_DOCKERHOST}" ] ; then
-   HOST_IP=$TAIGA_DOCKERHOST
+if [ -n "${ICESCRUM_DOCKERHOST}" ] ; then
+   HOST_IP=$ICESCRUM_DOCKERHOST
 else
    # b) On an AWS instance, this expression will get the ip of the eth0 network bridge
    HOST_IP=$(echo $(\
@@ -59,6 +63,7 @@ if [ -z "$(docker ps -a --filter name=icescrum-app | grep icescrum-app)" ] ; the
       --restart unless-stopped \
       -p 8080:8080 \
       -e ICESCRUM_HOST=${HOST_IP} \
+      -v $(pwd)/logs:/root/logs/
       icescrum/icescrum
 elif [ -z "$(docker ps --filter name=icescrum-app | grep icescrum-app)" ] ; then
    docker start icescrum-app

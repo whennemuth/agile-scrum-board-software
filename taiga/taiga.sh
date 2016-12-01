@@ -11,8 +11,8 @@ if [ ! -f $(pwd)/.gitignore ] ; then
 fi
 
 # 2) Figure out what the internet ip of the docker host is
-if [ -n "${DOCKERHOST}" ] ; then
-   HOST_IP=$DOCKERHOST
+if [ -n "${TAIGA_DOCKERHOST}" ] ; then
+   HOST_IP=$TAIGA_DOCKERHOST
 else
    # b) On an AWS instance, this expression will get the ip of the eth0 network bridge
    HOST_IP=$(echo $(\
