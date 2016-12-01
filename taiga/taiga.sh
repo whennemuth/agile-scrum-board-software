@@ -75,7 +75,7 @@ if [ -z "$(docker ps -a | grep -P 'taiga\\s+.*?docker-entrypoint')" ] ; then
      --link taiga-rabbit:rabbit \
      --link taiga-events:events \
      -p 8282:80 \
-     -e TAIGA_HOSTNAME=${HOST_IP}/taiga \
+     -e TAIGA_HOSTNAME=${HOST_IP}:8282/taiga \
      -v $(pwd)/taiga-back/media:/usr/src/taiga-back/media \
      benhutchins/taiga
 elif [ -z "$(docker ps | grep -P 'taiga\\s+.*?docker-entrypoint')" ] ; then
