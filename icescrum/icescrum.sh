@@ -65,7 +65,7 @@ if [ -z "$(docker ps -a --filter name=icescrum-app | grep icescrum-app)" ] ; the
       --restart unless-stopped \
       -p 8080:8080 \
       -e ICESCRUM_HOST=${HOST_IP} \
-      -v $(pwd)/logs:/root/logs/
+      -v $(pwd)/logs:/root/logs/ \
       icescrum/icescrum
 elif [ -z "$(docker ps --filter name=icescrum-app | grep icescrum-app)" ] ; then
    docker start icescrum-app
