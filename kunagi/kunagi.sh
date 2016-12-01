@@ -2,11 +2,11 @@
 
 echo ".gitignore" > .gitignore
 echo "kunagi-data" >> .gitignore
+if [ ! -d $(pwd)/kunagi-data ] ; then
+   mkdir -p $(pwd)/kunagi-data
+fi
 
 if [ -z "$(docker ps -a --filter name=kunagi | grep kunagi)" ] ; then
-   if [ ! -d $(pwd)/kunagi-data ] ; then
-      mkdir -p $(pwd)/kunagi-data
-   fi
 
    docker run \
       -d \

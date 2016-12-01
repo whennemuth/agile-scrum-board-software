@@ -7,19 +7,19 @@
 #                       If you set the port 443 (if ICESCRUM_HTTPS is set) or the port 80 then the port will be omitted in the URL.
 #    ICESCRUM_CONTEXT : It's the name that comes after "/" in the URL. You can either define another one or provide / to have an empty context.
 
+# 1) Make sure the directories to mount to are created and ignored by git
 echo ".gitignore" > .gitignore
 echo "mysqldata" >> .gitignore
 echo "logs" >> .gitignore
+if [ ! -d $(pwd)/mysqldata ] ; then
+   mkdir -p $(pwd)/mysqldata
+fi
+if [ ! -d $(pwd)/logs ] ; then
+   mkdir -p $(pwd)/logs
+fi
 
-# 1) Start the database container
+# 2) Start the database container
 if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
-   if [ ! -d $(pwd)/mysqldata ] ; then
-      mkdir -p $(pwd)/mysqldata
-   fi
-   if [ ! -d $(pwd)/logs ] ; then
-      mkdir -p $(pwd)/logs
-   fi
-
    docker run \
       -d \
       -p 3306:3306 \
@@ -33,7 +33,7 @@ elif [ -z "$(docker ps --filter name=icescrum-db | grep icescrum-db)" ] ; then
    docker start icescrum-db
 fi
 
-# 2) Figure out what the internet ip of the docker host is
+# 3) Figure out what the internet ip of the docker host is
 if [ -n "${ICESCRUM_DOCKERHOST}" ] ; then
    HOST_IP=$ICESCRUM_DOCKERHOST
 else
@@ -56,6 +56,7 @@ else
    fi
 fi
 
+# 4) Start the application container
 if [ -z "$(docker ps -a --filter name=icescrum-app | grep icescrum-app)" ] ; then
    docker run \
       -d \
