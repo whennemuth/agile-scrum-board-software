@@ -103,8 +103,6 @@ if [ -z "$(docker ps -a --filter name=icescrum-app | grep icescrum-app)" ] ; the
       --link icescrum-db \
       --restart unless-stopped \
       -p 8080:8080 \
-      -p 465:465 \
-      -p 587:587 \
       -e ICESCRUM_HOST=${HOST_IP} \
       -v $(pwd)/logs:/root/logs \
       -v $(pwd)/tomcat:/usr/local/tomcat/logs \
