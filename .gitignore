@@ -4,3 +4,4 @@ kunagi/kunagi-data
 icescrum/mysqldata
 taiga-back
 .gitignore
+ssh.sh
