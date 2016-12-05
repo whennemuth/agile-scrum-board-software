@@ -6,6 +6,26 @@
 #                       defining a different external port (e.g. by exposing a different port in docker run via the -p argument). 
 #                       If you set the port 443 (if ICESCRUM_HTTPS is set) or the port 80 then the port will be omitted in the URL.
 #    ICESCRUM_CONTEXT : It's the name that comes after "/" in the URL. You can either define another one or provide / to have an empty context.
+#
+# IMPORTANT!
+# The first time navigating to icescrum will invoke the configuration workflow.
+# Among the data being requested are the database connection details.
+# Accept all the defaults except:
+#
+# 1) Change type from hsqldb to mysql
+#
+# 2) Replace the datasource url:
+#       from: jdbc:mysql://localhost:3306/icescrum?useUnicode=true&characterEncoding=utf8
+#       to: jdbc:mysql://icescrum-db:3306/icescrum?useUnicode=true&characterEncoding=utf8
+#    NOTE the localhost is replace by the name of the container.
+#
+# 3) Change the username from "sa" to "root"
+# 
+# 4) Enter the value for the MYSQL_ROOT_PASSWORD environment variable as the password.
+#
+# The url for the app should be [ICESCRUM_HOST]:8080/icescrum
+
+
 
 # 1) Make sure the directories to mount to are created and ignored by git
 echo ".gitignore" > .gitignore
@@ -26,15 +46,28 @@ fi
 
 # 2) Start the database container
 if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
+   #
+   # Omitting the custom icescrum image: https://github.com/icescrum/iceScrum-docker/blob/master/mysql/Dockerfile
+   # This image seems to mainly interested in a Workaround to mount volume on OS X 
+   # (see https://github.com/docker-library/mysql/issues/99)
+   # However, using mysql:latest seems to work fine and /var/lib/mysql is successfully mounted.
+   #
+   # docker run \
+   #    -d \
+   #    -p 3306:3306 \
+   #    --name icescrum-db \
+   #    --restart unless-stopped \
+   #    -e MYSQL_ROOT_PASSWORD=root-secret \
+   #    -v $(pwd)/mysqldata:/var/lib/mysql \
+   #    icescrum/mysql
+
    docker run \
       -d \
-      -p 3306:3306 \
       --name icescrum-db \
-      --restart unless-stopped \
       -e MYSQL_ROOT_PASSWORD=root-secret \
+      -e MYSQL_DATABASE=icescrum \
       -v $(pwd)/mysqldata:/var/lib/mysql \
-      icescrum/mysql
-
+      mysql:latest
 elif [ -z "$(docker ps --filter name=icescrum-db | grep icescrum-db)" ] ; then
    docker start icescrum-db
 fi
