@@ -48,7 +48,7 @@ fi
 if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
    #
    # Omitting the custom icescrum image: https://github.com/icescrum/iceScrum-docker/blob/master/mysql/Dockerfile
-   # This image seems to mainly interested in a Workaround to mount volume on OS X 
+   # This image seems to be mainly interested in a workaround to mount volume on OS X 
    # (see https://github.com/docker-library/mysql/issues/99)
    # However, using mysql:latest seems to work fine and /var/lib/mysql is successfully mounted.
    #
@@ -64,6 +64,7 @@ if [ -z "$(docker ps -a --filter name=icescrum-db | grep icescrum-db)" ] ; then
    docker run \
       -d \
       --name icescrum-db \
+      --restart unless-stopped \
       -e MYSQL_ROOT_PASSWORD=root-secret \
       -e MYSQL_DATABASE=icescrum \
       -v $(pwd)/mysqldata:/var/lib/mysql \
