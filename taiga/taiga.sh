@@ -31,12 +31,13 @@ else
    fi
 fi
 
-# 3) Start the database container
+# 3) Start the database container (NOTE: The default user is "postgres")
 if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
    docker run \
       --name taiga-postgres \
       -d \
       --restart unless-stopped \
+      -p 5432:5432 \
       -e POSTGRES_PASSWORD=password \
       -e PGDATA=/var/lib/postgresql/data/pgdata \
       -v $(pwd)/taiga-back/pgdata:/var/lib/postgresql/data/pgdata \
