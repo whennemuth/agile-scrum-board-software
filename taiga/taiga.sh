@@ -32,6 +32,18 @@ else
 fi
 
 # 3) Start the database container (NOTE: The default user is "postgres")
+#    To get a connection in pgAdmin to this container, first tunnel to it:
+#    ssh -i ~/.ssh/buaws-kuali-rsa -L 63333:172.17.0.3:5432 wrh@10.57.237.86
+#    where...
+#       63333 is a random port we will use on our side of the connection
+#       172.17.0.3 is the ip that the docker0 network bridge is using to address the container locally (this value will vary - use "docker inspect [container name]" to find this ip address)
+#       5432 is the port that the container is mapping to the port postgres is running on inside the container (which is also 5432)
+#       wrh@10.57.237.86 is the user and ip of the EC2 instance serving as the docker host.
+#    in pgAdmin, create a server and set its connection details as follows:
+#       Host: localhost
+#       Port: 63333
+#       Maintenance database: postgres
+#       User name: postgres
 if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
    docker run \
       --name taiga-postgres \
