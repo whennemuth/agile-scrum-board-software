@@ -44,6 +44,8 @@ fi
 #       Port: 63333
 #       Maintenance database: postgres
 #       User name: postgres
+#   If you don't have an email server setup, you can manually invite users by sending them a link in an email you send to them yourself:
+#       10.57.237.86:8282/invitation/[value of token field in projects_membership table]
 if [ -z "$(docker ps -a --filter name=taiga-postgres | grep taiga-postgres)" ] ; then
    docker run \
       --name taiga-postgres \
